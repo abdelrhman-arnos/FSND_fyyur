@@ -5,7 +5,8 @@ function onSubmit(e, type) {
 
   const data = {};
   for (let key of formData.keys()) {
-    data[key] = formData[key === 'genres' ? 'getAll' : 'get'](key);
+    if (key === 'genres') data[key] = JSON.stringify(formData.getAll(key));
+    else data[key] = formData.get(key);
   }
 
   fetch(`/${type}/create`, {

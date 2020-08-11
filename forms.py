@@ -249,5 +249,3 @@ class ArtistForm(Form):
         # TODO implement enum restriction
         'facebook_link', validators=[URL()]
     )
-
-# TODO IMPLEMENT NEW ARTIST FORM AND NEW SHOW FORM
