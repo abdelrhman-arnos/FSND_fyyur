@@ -117,7 +117,7 @@ class VenueForm(Form):
         'phone'
     )
     image_link = StringField(
-        'image_link'
+        'image_link', validators=[DataRequired(), URL(message='Must be a valid URL')]
     )
     genres = SelectMultipleField(
         
@@ -147,7 +147,10 @@ class VenueForm(Form):
         ]
     )
     facebook_link = StringField(
-        'facebook_link', validators=[URL()]
+        'facebook_link', validators=[URL(message='Must be a valid URL')]
+    )
+    website = StringField(
+        'website', validators=[URL(message='Must be a valid URL')]
     )
 
 class ArtistForm(Form):
@@ -218,7 +221,7 @@ class ArtistForm(Form):
         'phone'
     )
     image_link = StringField(
-        'image_link'
+        'image_link', validators=[DataRequired(), URL(message='Must be a valid URL')]
     )
     genres = SelectMultipleField(
         # TODO implement enum restriction
@@ -247,5 +250,8 @@ class ArtistForm(Form):
     )
     facebook_link = StringField(
         # TODO implement enum restriction
-        'facebook_link', validators=[URL()]
+        'facebook_link', validators=[URL(message='Must be a valid URL')]
+    )
+    website = StringField(
+        'website', validators=[URL(message='Must be a valid URL')]
     )
