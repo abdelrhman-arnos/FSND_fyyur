@@ -210,6 +210,30 @@ def delete_venue(venue_id):
     flash('Venue ' + venue_id + ' was successfully deleted!')
     return redirect(url_for('index'))
 
+@app.route('/artists/<artist_id>', methods=['POST'])
+def delete_artist(artist_id):
+  error = None
+
+  try:
+    artist = Artist.query.get(artist_id)
+    db.session.delete(artist)
+    db.session.commit()
+    
+  except:
+    db.session.rollback()
+    error = 'Invalid data'
+    print(sys.exc_info())
+
+  finally:
+    db.session.close()
+
+  if error:
+    flash('An error occurred. Artist ' + artist_id + ' could not be deleted.')
+    abort(500)
+  else:
+    flash('Artist ' + artist_id + ' was successfully deleted!')
+    return redirect(url_for('index'))
+
 #  Artists
 #  ----------------------------------------------------------------
 @app.route('/artists')

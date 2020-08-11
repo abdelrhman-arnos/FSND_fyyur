@@ -48,9 +48,16 @@ endblock %} {% block content %}
       <i class="fas fa-moon"></i> Not currently seeking performance venues
     </p>
     {% endif %}
+    <br />
+    <button
+      class="delete"
+      onclick="onDelete('artists', '{{artist.id}}', '{{artist.name}}')"
+    >
+      Delete
+    </button>
   </div>
   <div class="col-sm-6">
-    <img src="{{ artist.image_link }}" alt="Venue Image" />
+    <img src="{{ artist.image_link }}" alt="Artist Image" />
   </div>
 </div>
 <section>
