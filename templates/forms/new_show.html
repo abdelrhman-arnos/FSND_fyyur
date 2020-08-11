@@ -1,7 +1,7 @@
 {% extends 'layouts/main.html' %} {% block title %}New Show Listing{% endblock
 %} {% block content %}
 <div class="form-wrapper">
-  <form method="post" class="form" onsubmit="createSubmission(event, 'shows')">
+  <form class="form" onsubmit="createSubmission(event, 'shows')">
     <h3 class="form-heading">List a new show</h3>
     <div class="form-group">
       <label for="artist_id">Artist ID</label>
@@ -20,7 +20,7 @@
     </div>
     <input
       type="submit"
-      value="Create Venue"
+      value="Create Show"
       class="btn btn-primary btn-lg btn-block"
     />
   </form>
