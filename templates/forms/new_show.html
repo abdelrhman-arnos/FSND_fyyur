@@ -1,7 +1,7 @@
 {% extends 'layouts/main.html' %} {% block title %}New Show Listing{% endblock
 %} {% block content %}
 <div class="form-wrapper">
-  <form method="post" class="form" onsubmit="onSubmit(event, 'shows')">
+  <form method="post" class="form" onsubmit="createSubmission(event, 'shows')">
     <h3 class="form-heading">List a new show</h3>
     <div class="form-group">
       <label for="artist_id">Artist ID</label>
@@ -11,12 +11,12 @@
     <div class="form-group">
       <label for="venue_id">Venue ID</label>
       <small>ID can be found on the Venue's Page</small>
-      {{ form.venue_id(class_ = 'form-control', autofocus = true) }}
+      {{ form.venue_id(class_ = 'form-control') }}
     </div>
     <div class="form-group">
       <label for="start_time">Start Time</label>
       {{ form.start_time(class_ = 'form-control', placeholder='YYYY-MM-DD
-      HH:MM', autofocus = true) }}
+      HH:MM') }}
     </div>
     <input
       type="submit"

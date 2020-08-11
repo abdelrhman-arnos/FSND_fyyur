@@ -395,10 +395,27 @@ def edit_artist(artist_id):
 
 @app.route('/artists/<int:artist_id>/edit', methods=['POST'])
 def edit_artist_submission(artist_id):
-  # TODO: take values from the form submitted, and update existing
-  # artist record with ID <artist_id> using the new attributes
+  error = None
 
-  return redirect(url_for('show_artist', artist_id=artist_id))
+  try:
+    data = request.get_json()
+    db.session.query(Artist).filter(Artist.id == artist_id).update(data, synchronize_session=False)
+    db.session.commit()
+    
+  except:
+    db.session.rollback()
+    error = 'Invalid data'
+    print(sys.exc_info())
+
+  finally:
+    db.session.close()
+
+  if error:
+    flash('An error occurred. Artist ' + data['name'] + ' could not be updated.')
+    abort(500)
+  else:
+    flash('Artist ' + data['name'] + ' was successfully updated!')
+    return redirect(url_for('show_artist', artist_id=artist_id))
 
 @app.route('/venues/<int:venue_id>/edit', methods=['GET'])
 def edit_venue(venue_id):
@@ -417,9 +434,27 @@ def edit_venue(venue_id):
 
 @app.route('/venues/<int:venue_id>/edit', methods=['POST'])
 def edit_venue_submission(venue_id):
-  # TODO: take values from the form submitted, and update existing
-  # venue record with ID <venue_id> using the new attributes
-  return redirect(url_for('show_venue', venue_id=venue_id))
+  error = None
+
+  try:
+    data = request.get_json()
+    db.session.query(Venue).filter(Venue.id == venue_id).update(data, synchronize_session=False)
+    db.session.commit()
+    
+  except:
+    db.session.rollback()
+    error = 'Invalid data'
+    print(sys.exc_info())
+
+  finally:
+    db.session.close()
+
+  if error:
+    flash('An error occurred. Venue ' + data['name'] + ' could not be updated.')
+    abort(500)
+  else:
+    flash('Venue ' + data['name'] + ' was successfully updated!')
+    return redirect(url_for('show_venue', venue_id=venue_id))
 
 #  Create Artist
 #  ----------------------------------------------------------------

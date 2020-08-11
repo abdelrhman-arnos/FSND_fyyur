@@ -1,7 +1,11 @@
 {% extends 'layouts/main.html' %} {% block title %}New Artist{% endblock %} {%
 block content %}
 <div class="form-wrapper">
-  <form method="post" class="form" onsubmit="onSubmit(event, 'artists')">
+  <form
+    method="post"
+    class="form"
+    onsubmit="createSubmission(event, 'artists')"
+  >
     <h3 class="form-heading">List a new artist</h3>
     <div class="form-group">
       <label for="name">Name</label>
@@ -11,30 +15,26 @@ block content %}
       <label>City & State</label>
       <div class="form-inline">
         <div class="form-group">
-          {{ form.city(class_ = 'form-control', placeholder='City', autofocus =
-          true) }}
+          {{ form.city(class_ = 'form-control', placeholder='City') }}
         </div>
         <div class="form-group">
-          {{ form.state(class_ = 'form-control', placeholder='State', autofocus
-          = true) }}
+          {{ form.state(class_ = 'form-control', placeholder='State') }}
         </div>
       </div>
     </div>
     <div class="form-group">
       <label for="phone">Phone</label>
-      {{ form.phone(class_ = 'form-control', placeholder='xxx-xxx-xxxx',
-      autofocus = true) }}
+      {{ form.phone(class_ = 'form-control', placeholder='xxx-xxx-xxxx') }}
     </div>
     <div class="form-group">
       <label for="genres">Genres</label>
       <small>Ctrl+Click to select multiple</small>
       {{ form.genres(class_ = 'form-control', placeholder='Genres, separated by
-      commas', autofocus = true) }}
+      commas') }}
     </div>
     <div class="form-group">
       <label for="genres">Facebook Link</label>
-      {{ form.facebook_link(class_ = 'form-control', placeholder='http://',
-      autofocus = true) }}
+      {{ form.facebook_link(class_ = 'form-control', placeholder='http://') }}
     </div>
     <input
       type="submit"
