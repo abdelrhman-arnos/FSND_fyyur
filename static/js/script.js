@@ -1,3 +1,7 @@
+function redirection({ ok, url }) {
+  return ok && location.replace(url);
+}
+
 function formData(form) {
   const data = {};
   const formData = new FormData(form);
@@ -17,7 +21,7 @@ function createSubmission(e, type) {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: formData(e.target),
-  }).then((res) => res.ok && location.replace(res.url));
+  }).then(redirection);
 }
 
 function editSubmission(e, type, id) {
@@ -27,5 +31,12 @@ function editSubmission(e, type, id) {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: formData(e.target),
-  }).then((res) => res.ok && location.replace(res.url));
+  }).then(redirection);
+}
+
+function onDelete(type, id, name) {
+  const confirmation = confirm(`Are you sure to delete ${name}?`);
+
+  if (confirmation)
+    fetch(`/${type}/${id}`, { method: 'POST' }).then(redirection);
 }
