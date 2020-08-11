@@ -42,7 +42,7 @@ class Venue(db.Model):
     image_link = db.Column(db.String(500))
     facebook_link = db.Column(db.String(120))
     website = db.Column(db.String(120))
-    show = db.relationship("Show", backref="venue_shows", cascade="all, delete", lazy=True)
+    show = db.relationship("Show", backref="venue_shows", cascade="all, delete", lazy='dynamic')
 
     def __repr__(self):
       return f'<Venue id: {self.id}, name: {self.name}>'
@@ -59,7 +59,7 @@ class Artist(db.Model):
     image_link = db.Column(db.String(500))
     facebook_link = db.Column(db.String(120))
     website = db.Column(db.String(120))
-    show = db.relationship("Show", backref="artist_shows", cascade="all, delete", lazy=True)
+    show = db.relationship("Show", backref="artist_shows", cascade="all, delete", lazy='dynamic')
 
     def __repr__(self):
       return f'<Artist id: {self.id}, name: {self.name}>'
@@ -75,7 +75,8 @@ class Show(db.Model):
   venue = db.relationship("Venue", backref="show_venues", lazy=True)
 
   def __repr__(self):
-    return f'<Show id: {self.id}, artist_id: {self.artist_id}, venue_id: {self.venue_id}>'
+    return f'<Show id: {self.id}, artist_id: {self.artist_id}, venue_id: {self.venue_id} start_time: {self.start_time}>'
+
 
 #----------------------------------------------------------------------------#
 # Filters.
@@ -105,30 +106,29 @@ def index():
 
 @app.route('/venues')
 def venues():
-  # TODO: replace with real venues data.
-  #       num_shows should be aggregated based on number of upcoming shows per venue.
-  data=[{
-    "city": "San Francisco",
-    "state": "CA",
-    "venues": [{
-      "id": 1,
-      "name": "The Musical Hop",
-      "num_upcoming_shows": 0,
-    }, {
-      "id": 3,
-      "name": "Park Square Live Music & Coffee",
-      "num_upcoming_shows": 1,
-    }]
-  }, {
-    "city": "New York",
-    "state": "NY",
-    "venues": [{
-      "id": 2,
-      "name": "The Dueling Pianos Bar",
-      "num_upcoming_shows": 0,
-    }]
-  }]
-  return render_template('pages/venues.html', areas=data);
+  data = []
+  venues = Venue.query.order_by(Venue.state).all()
+
+  for venue in venues:
+    venueCollection = {
+      'id': venue.id,
+      'name': venue.name,
+    }
+
+    if len(data) > 0:
+      previous = data[len(data) - 1]
+
+      if previous['city'] == venue.city and previous['state'] == venue.state:
+        previous['venues'].append(venueCollection)
+        continue
+
+    data.append({
+      'city': venue.city,
+      'state': venue.state,
+      'venues': [venueCollection] 
+    })
+
+  return render_template('pages/venues.html', areas=data)
 
 @app.route('/venues/search', methods=['POST'])
 def search_venues():
