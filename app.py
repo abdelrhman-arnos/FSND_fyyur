@@ -167,6 +167,7 @@ def create_venue_submission():
     venue = Venue(**data)
     db.session.add(venue)
     db.session.commit()
+    venue_id = venue.id
     
   except:
     db.session.rollback()
@@ -181,7 +182,7 @@ def create_venue_submission():
     abort(500)
   else:
     flash('Venue ' + data['name'] + ' was successfully listed!')
-    return redirect(url_for('index'))
+    return redirect(url_for('show_venue', venue_id = venue_id))
 
 @app.route('/venues/<venue_id>', methods=['DELETE'])
 def delete_venue(venue_id):
@@ -327,6 +328,7 @@ def create_artist_submission():
     artist = Artist(**data)
     db.session.add(artist)
     db.session.commit()
+    artist_id = artist.id
     
   except:
     db.session.rollback()
@@ -341,7 +343,7 @@ def create_artist_submission():
     abort(500)
   else:
     flash('Artist ' + data['name'] + ' was successfully listed!')
-    return redirect(url_for('index'))
+    return redirect(url_for('show_artist', artist_id=artist_id))
 
 #  Shows
 #  ----------------------------------------------------------------
