@@ -42,6 +42,8 @@ class Venue(db.Model):
     image_link = db.Column(db.String(500))
     facebook_link = db.Column(db.String(120))
     website = db.Column(db.String(120))
+    seeking_talent = db.Column(db.Boolean, nullable=False, default=False)
+    seeking_description = db.Column(db.String(500))
     show = db.relationship("Show", backref="venue_shows", cascade="all, delete", lazy='dynamic')
 
     def __repr__(self):
@@ -163,6 +165,7 @@ def create_venue_submission():
 
   try:
     data = request.get_json()
+    data['seeking_talent'] = True if data['seeking_talent'] == 'True' else False
     venue = Venue(**data)
     db.session.add(venue)
     db.session.commit()

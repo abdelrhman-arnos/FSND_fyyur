@@ -1,3 +1,20 @@
+const $seeking_description = document.getElementById('seeking_desc_wrapper');
+
+document
+  .querySelector('#seeking_talent input[value="True"]')
+  .addEventListener('change', function ({ target }) {
+    if (target.checked) $seeking_description.style.display = 'block';
+  });
+
+document
+  .querySelector('#seeking_talent input[value="False"]')
+  .addEventListener('change', function ({ target }) {
+    if (target.checked) {
+      $seeking_description.style.display = 'none';
+      document.getElementById('seeking_description').value = '';
+    }
+  });
+
 function redirection({ ok, url }) {
   return ok && location.replace(url);
 }

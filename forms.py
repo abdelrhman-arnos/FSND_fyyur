@@ -1,7 +1,7 @@
 from datetime import datetime
 from flask_wtf import Form
-from wtforms import StringField, SelectField, SelectMultipleField, DateTimeField
-from wtforms.validators import DataRequired, AnyOf, URL
+from wtforms import StringField, SelectField, RadioField, TextAreaField, SelectMultipleField, DateTimeField
+from wtforms.validators import DataRequired, AnyOf, URL, Length
 
 #----------------------------------------------------------------------------#
 # Enums.
@@ -46,13 +46,25 @@ class ShowForm(Form):
         validators=[DataRequired()],
         default= datetime.today()
     )
-
+    
 class VenueForm(Form):
     name = StringField(
         'name', validators=[DataRequired()]
     )
     city = StringField(
         'city', validators=[DataRequired()]
+    )
+    seeking_description = TextAreaField(
+        'seeking_description',
+        validators=[
+            Length(max=500, message='Max characters are %(max)d')
+        ]
+    )
+    seeking_talent = RadioField(
+        'seeking_talent',
+        coerce=int,
+        default=False,
+        choices=[(False,'No'),(True,'Yes')]
     )
     state = SelectField(
         'state', validators=[DataRequired()],
