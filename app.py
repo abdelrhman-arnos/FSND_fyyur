@@ -272,7 +272,9 @@ def edit_artist(artist_id):
     state = artist.state,
     genres = json.loads(artist.genres),
     phone = artist.phone,
+    image_link = artist.image_link,
     facebook_link = artist.facebook_link,
+    website = artist.website,
   )
 
   return render_template('forms/edit_artist.html', form=form, artist=artist)
