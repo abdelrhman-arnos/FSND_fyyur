@@ -1,18 +1,23 @@
 const $seeking_description = document.getElementById('seeking_desc_wrapper');
+const isTalentChecked = document.querySelector(
+  '#seeking_talent input[value="False"]',
+)?.checked;
 
-document
-  .querySelector('#seeking_talent input[value="True"]')
-  .addEventListener('change', function ({ target }) {
-    if (target.checked) $seeking_description.style.display = 'block';
-  });
+if (isTalentChecked) $seeking_description.style.display = 'none';
 
 document
   .querySelector('#seeking_talent input[value="False"]')
-  .addEventListener('change', function ({ target }) {
+  ?.addEventListener('change', function ({ target }) {
     if (target.checked) {
       $seeking_description.style.display = 'none';
       document.getElementById('seeking_description').value = '';
     }
+  });
+
+document
+  .querySelector('#seeking_talent input[value="True"]')
+  ?.addEventListener('change', function ({ target }) {
+    if (target.checked) $seeking_description.style.display = 'block';
   });
 
 function redirection({ ok, url }) {

@@ -311,7 +311,11 @@ def edit_venue(venue_id):
     state = venue.state,
     genres = json.loads(venue.genres),
     phone = venue.phone,
+    image_link = venue.image_link,
     facebook_link = venue.facebook_link,
+    website = venue.website,
+    seeking_talent = venue.seeking_talent,
+    seeking_description = venue.seeking_description,
   )
 
   return render_template('forms/edit_venue.html', form=form, venue=venue)
