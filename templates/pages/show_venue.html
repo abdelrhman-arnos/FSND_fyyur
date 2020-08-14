@@ -6,12 +6,17 @@ block content %}
       <h1 class="monospace">
         {{ venue.name }}
       </h1>
-      <button
-        class="delete"
-        onclick="onDelete('venues', '{{venue.id}}', '{{venue.name}}')"
-      >
-        Delete
-      </button>
+      <div>
+        <button class="primary-button">
+          <a href="/venues/{{venue.id}}/edit">Edit</a>
+        </button>
+        <button
+          class="danger-button"
+          onclick="onDelete('venues', '{{venue.id}}', '{{venue.name}}')"
+        >
+          Delete
+        </button>
+      </div>
     </div>
     <p class="subtitle">
       ID: {{ venue.id }}
