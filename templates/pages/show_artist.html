@@ -2,9 +2,22 @@
 endblock %} {% block content %}
 <div class="row">
   <div class="col-sm-6">
-    <h1 class="monospace">
-      {{ artist.name }}
-    </h1>
+    <div class="show-header">
+      <h1 class="monospace">
+        {{ artist.name }}
+      </h1>
+      <div>
+        <button class="primary-button">
+          <a href="/artists/{{artist.id}}/edit">Edit</a>
+        </button>
+        <button
+          class="danger-button"
+          onclick="onDelete('artists', '{{artist.id}}', '{{artist.name}}')"
+        >
+          Delete
+        </button>
+      </div>
+    </div>
     <p class="subtitle">
       ID: {{ artist.id }}
     </p>

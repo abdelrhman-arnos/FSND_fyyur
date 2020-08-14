@@ -239,7 +239,7 @@ textarea {
   resize: vertical;
   min-height: 5rem;
 }
-.venue-header {
+.show-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
