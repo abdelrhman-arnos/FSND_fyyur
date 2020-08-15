@@ -14,6 +14,7 @@ from flask_wtf import Form
 from flask_migrate import Migrate
 from forms import *
 import sys
+from datetime import datetime
 
 #----------------------------------------------------------------------------#
 # App Config.
@@ -49,6 +50,29 @@ class Venue(db.Model):
     def __repr__(self):
       return f'<Venue id: {self.id}, name: {self.name}>'
 
+    def json(self):
+      upcoming_shows = self.show.filter(Show.start_time > datetime.now()).all()
+      past_shows = self.show.filter(Show.start_time < datetime.now()).all()
+
+      return {
+        'id': self.id,
+        'name': self.name,
+        'city': self.city,
+        'state': self.state,
+        'address': self.address,
+        'phone': self.phone,
+        'genres':  json.loads(self.genres),
+        'image_link': self.image_link,
+        'facebook_link': self.facebook_link,
+        'website': self.website,
+        'seeking_talent': self.seeking_talent,
+        'seeking_description': self.seeking_description,
+        'upcoming_shows_count': len(upcoming_shows),
+        'upcoming_shows': upcoming_shows,
+        'past_shows_count': len(past_shows),
+        'past_shows': past_shows,
+      }
+
 class Artist(db.Model):
     __tablename__ = 'artists'
 
@@ -72,7 +96,7 @@ class Show(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   artist_id = db.Column(db.Integer, db.ForeignKey('artists.id', ondelete="CASCADE"), nullable=False)
   venue_id = db.Column(db.Integer, db.ForeignKey('venues.id', ondelete="CASCADE"), nullable=False)
-  start_time = db.Column(db.String)
+  start_time = db.Column(db.DateTime, nullable=False)
   artist = db.relationship("Artist", backref="show_artists", lazy=True)
   venue = db.relationship("Venue", backref="show_venues", lazy=True)
 
@@ -85,12 +109,11 @@ class Show(db.Model):
 #----------------------------------------------------------------------------#
 
 def format_datetime(value, format='medium'):
-  date = dateutil.parser.parse(value)
   if format == 'full':
       format="EEEE MMMM, d, y 'at' h:mma"
   elif format == 'medium':
       format="EE MM, dd, y h:mma"
-  return babel.dates.format_datetime(date, format)
+  return babel.dates.format_datetime(value, format)
 
 app.jinja_env.filters['datetime'] = format_datetime
 
@@ -147,9 +170,9 @@ def search_venues():
 @app.route('/venues/<int:venue_id>')
 def show_venue(venue_id):
   venue = Venue.query.get(venue_id)
-  venue.genres = json.loads(venue.genres)
+  # print(venue.json())
   
-  return render_template('pages/show_venue.html', venue=venue)
+  return render_template('pages/show_venue.html', venue=venue.json())
 
 #  Create Venue
 #  ----------------------------------------------------------------
