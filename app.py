@@ -278,6 +278,7 @@ def edit_venue_submission(venue_id):
 
   try:
     data = request.get_json()
+    data['seeking_talent'] = True if data['seeking_talent'] == 'True' else False
     db.session.query(Venue).filter(Venue.id == venue_id).update(data, synchronize_session=False)
     db.session.commit()
     
@@ -348,6 +349,7 @@ def edit_artist_submission(artist_id):
 
   try:
     data = request.get_json()
+    data['seeking_venue'] = True if data['seeking_venue'] == 'True' else False
     db.session.query(Artist).filter(Artist.id == artist_id).update(data, synchronize_session=False)
     db.session.commit()
     
