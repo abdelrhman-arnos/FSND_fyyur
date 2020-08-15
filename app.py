@@ -90,6 +90,26 @@ class Artist(db.Model):
     def __repr__(self):
       return f'<Artist id: {self.id}, name: {self.name}>'
 
+    def json(self):
+      upcoming_shows = self.show.filter(Show.start_time > datetime.now()).all()
+      past_shows = self.show.filter(Show.start_time < datetime.now()).all()
+
+      return {
+        'id': self.id,
+        'name': self.name,
+        'city': self.city,
+        'state': self.state,
+        'phone': self.phone,
+        'genres': json.loads(self.genres),
+        'image_link': self.image_link,
+        'facebook_link': self.facebook_link,
+        'website': self.website,
+        'upcoming_shows_count': len(upcoming_shows),
+        'upcoming_shows': upcoming_shows,
+        'past_shows_count': len(past_shows),
+        'past_shows': past_shows,
+      }
+
 class Show(db.Model):
   __tablename__ = 'shows'
 
@@ -170,12 +190,8 @@ def search_venues():
 @app.route('/venues/<int:venue_id>')
 def show_venue(venue_id):
   venue = Venue.query.get(venue_id)
-  # print(venue.json())
   
   return render_template('pages/show_venue.html', venue=venue.json())
-
-#  Create Venue
-#  ----------------------------------------------------------------
 
 @app.route('/venues/create', methods=['GET'])
 def create_venue_form():
@@ -233,30 +249,6 @@ def delete_venue(venue_id):
     flash('Venue ' + venue_id + ' was successfully deleted!')
     return redirect(url_for('index'))
 
-@app.route('/artists/<artist_id>', methods=['POST'])
-def delete_artist(artist_id):
-  error = None
-
-  try:
-    artist = Artist.query.get(artist_id)
-    db.session.delete(artist)
-    db.session.commit()
-    
-  except:
-    db.session.rollback()
-    error = 'Invalid data'
-    print(sys.exc_info())
-
-  finally:
-    db.session.close()
-
-  if error:
-    flash('An error occurred. Artist ' + artist_id + ' could not be deleted.')
-    abort(500)
-  else:
-    flash('Artist ' + artist_id + ' was successfully deleted!')
-    return redirect(url_for('index'))
-
 #  Artists
 #  ----------------------------------------------------------------
 @app.route('/artists')
@@ -280,9 +272,8 @@ def search_artists():
 @app.route('/artists/<int:artist_id>')
 def show_artist(artist_id):
   artist = Artist.query.get(artist_id)
-  artist.genres = json.loads(artist.genres)
 
-  return render_template('pages/show_artist.html', artist=artist)
+  return render_template('pages/show_artist.html', artist=artist.json())
 
 #  Update
 #  ----------------------------------------------------------------
@@ -402,6 +393,30 @@ def create_artist_submission():
   else:
     flash('Artist ' + data['name'] + ' was successfully listed!')
     return redirect(url_for('show_artist', artist_id=artist_id))
+
+@app.route('/artists/<artist_id>', methods=['POST'])
+def delete_artist(artist_id):
+  error = None
+
+  try:
+    artist = Artist.query.get(artist_id)
+    db.session.delete(artist)
+    db.session.commit()
+    
+  except:
+    db.session.rollback()
+    error = 'Invalid data'
+    print(sys.exc_info())
+
+  finally:
+    db.session.close()
+
+  if error:
+    flash('An error occurred. Artist ' + artist_id + ' could not be deleted.')
+    abort(500)
+  else:
+    flash('Artist ' + artist_id + ' was successfully deleted!')
+    return redirect(url_for('index'))
 
 #  Shows
 #  ----------------------------------------------------------------
