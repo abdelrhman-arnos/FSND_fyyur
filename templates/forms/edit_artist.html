@@ -43,6 +43,14 @@ block content %}
       <label for="website">Website</label>
       {{ form.website(class_ = 'form-control', placeholder='http://') }}
     </div>
+    <div class="form-group" id="seeking">
+      <label for="seeking_venue">Seeking Venue</label>
+      {{ form.seeking_venue(class_ = 'list-radio-buttons') }}
+    </div>
+    <div class="form-group" id="seeking_desc_wrapper">
+      <label for="seeking_description">Seeking Description</label>
+      {{ form.seeking_description(class_ = 'form-control') }}
+    </div>
     <input
       type="submit"
       value="Edit Artist"

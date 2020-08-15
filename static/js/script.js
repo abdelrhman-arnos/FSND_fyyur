@@ -1,12 +1,11 @@
 const $seeking_description = document.getElementById('seeking_desc_wrapper');
-const isTalentChecked = document.querySelector(
-  '#seeking_talent input[value="False"]',
-)?.checked;
+const isTalentChecked = document.querySelector('#seeking input[value="False"]')
+  ?.checked;
 
 if (isTalentChecked) $seeking_description.style.display = 'none';
 
 document
-  .querySelector('#seeking_talent input[value="False"]')
+  .querySelector('#seeking input[value="False"]')
   ?.addEventListener('change', function ({ target }) {
     if (target.checked) {
       $seeking_description.style.display = 'none';
@@ -15,7 +14,7 @@ document
   });
 
 document
-  .querySelector('#seeking_talent input[value="True"]')
+  .querySelector('#seeking input[value="True"]')
   ?.addEventListener('change', function ({ target }) {
     if (target.checked) $seeking_description.style.display = 'block';
   });

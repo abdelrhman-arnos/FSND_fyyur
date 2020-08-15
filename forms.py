@@ -4,33 +4,6 @@ from wtforms import StringField, SelectField, RadioField, TextAreaField, SelectM
 from wtforms.validators import DataRequired, AnyOf, URL, Length
 
 #----------------------------------------------------------------------------#
-# Enums.
-#----------------------------------------------------------------------------#
-
-import enum
-
-class Genres(enum.Enum):
-    alternative = 'Alternative'
-    blues = 'Blues'
-    classical = 'Classical'
-    country = 'Country'
-    electronic = 'Electronic'
-    folk = 'Folk'
-    funk = 'Funk'
-    hipHop = 'Hip-Hop'
-    heavyMetal = 'Heavy Metal'
-    instrumental = 'Instrumental'
-    jazz = 'Jazz'
-    musicalTheatre = 'Musical Theatre'
-    pop = 'Pop'
-    punk = 'Punk'
-    rb = 'R&B'
-    reggae = 'Reggae'
-    rockRoll = 'Rock n Roll'
-    soul = 'Soul'
-    other = 'Other'
-
-#----------------------------------------------------------------------------#
 # Forms.
 #----------------------------------------------------------------------------#
 
@@ -132,9 +105,6 @@ class VenueForm(Form):
         'image_link', validators=[DataRequired(), URL(message='Must be a valid URL')]
     )
     genres = SelectMultipleField(
-        
-        # TODO implement enum restriction
-
         'genres', validators=[DataRequired()],
         choices=[
             ('Alternative', 'Alternative'),
@@ -229,14 +199,12 @@ class ArtistForm(Form):
         ]
     )
     phone = StringField(
-        # TODO implement validation logic for state
         'phone'
     )
     image_link = StringField(
         'image_link', validators=[DataRequired(), URL(message='Must be a valid URL')]
     )
     genres = SelectMultipleField(
-        # TODO implement enum restriction
         'genres', validators=[DataRequired()],
         choices=[
             ('Alternative', 'Alternative'),
@@ -261,9 +229,20 @@ class ArtistForm(Form):
         ]
     )
     facebook_link = StringField(
-        # TODO implement enum restriction
         'facebook_link', validators=[URL(message='Must be a valid URL')]
     )
     website = StringField(
         'website', validators=[URL(message='Must be a valid URL')]
+    )
+    seeking_description = TextAreaField(
+        'seeking_description',
+        validators=[
+            Length(max=500, message='Max characters are %(max)d')
+        ]
+    )
+    seeking_venue = RadioField(
+        'seeking_venue',
+        coerce=int,
+        default=False,
+        choices=[(False,'No'),(True,'Yes')]
     )

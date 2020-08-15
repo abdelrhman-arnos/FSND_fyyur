@@ -85,6 +85,8 @@ class Artist(db.Model):
     image_link = db.Column(db.String(500))
     facebook_link = db.Column(db.String(120))
     website = db.Column(db.String(120))
+    seeking_venue = db.Column(db.Boolean, nullable=False, default=False)
+    seeking_description = db.Column(db.String(500))
     show = db.relationship("Show", backref="artist_shows", cascade="all, delete", lazy='dynamic')
 
     def __repr__(self):
@@ -104,6 +106,8 @@ class Artist(db.Model):
         'image_link': self.image_link,
         'facebook_link': self.facebook_link,
         'website': self.website,
+        'seeking_venue': self.seeking_venue,
+        'seeking_description': self.seeking_description,
         'upcoming_shows_count': len(upcoming_shows),
         'upcoming_shows': upcoming_shows,
         'past_shows_count': len(past_shows),
@@ -249,74 +253,6 @@ def delete_venue(venue_id):
     flash('Venue ' + venue_id + ' was successfully deleted!')
     return redirect(url_for('index'))
 
-#  Artists
-#  ----------------------------------------------------------------
-@app.route('/artists')
-def artists():
-  artists = Artist.query.all()
-
-  return render_template('pages/artists.html', artists=artists)
-
-@app.route('/artists/search', methods=['POST'])
-def search_artists():
-  search_term = request.form.get('search_term', '')
-  search = "%{}%".format(search_term)
-  artists = Artist.query.filter(Artist.name.like(search)).all()
-  response={
-    "count": len(artists),
-    "data": artists
-  }
-  
-  return render_template('pages/search_artists.html', results=response, search_term=search_term)
-
-@app.route('/artists/<int:artist_id>')
-def show_artist(artist_id):
-  artist = Artist.query.get(artist_id)
-
-  return render_template('pages/show_artist.html', artist=artist.json())
-
-#  Update
-#  ----------------------------------------------------------------
-@app.route('/artists/<int:artist_id>/edit', methods=['GET'])
-def edit_artist(artist_id):
-  artist = Artist.query.get(artist_id)
-  form = ArtistForm(
-    name = artist.name,
-    city = artist.city,
-    state = artist.state,
-    genres = json.loads(artist.genres),
-    phone = artist.phone,
-    image_link = artist.image_link,
-    facebook_link = artist.facebook_link,
-    website = artist.website,
-  )
-
-  return render_template('forms/edit_artist.html', form=form, artist=artist)
-
-@app.route('/artists/<int:artist_id>/edit', methods=['POST'])
-def edit_artist_submission(artist_id):
-  error = None
-
-  try:
-    data = request.get_json()
-    db.session.query(Artist).filter(Artist.id == artist_id).update(data, synchronize_session=False)
-    db.session.commit()
-    
-  except:
-    db.session.rollback()
-    error = 'Invalid data'
-    print(sys.exc_info())
-
-  finally:
-    db.session.close()
-
-  if error:
-    flash('An error occurred. Artist ' + data['name'] + ' could not be updated.')
-    abort(500)
-  else:
-    flash('Artist ' + data['name'] + ' was successfully updated!')
-    return redirect(url_for('show_artist', artist_id=artist_id))
-
 @app.route('/venues/<int:venue_id>/edit', methods=['GET'])
 def edit_venue(venue_id):
   venue = Venue.query.get(venue_id)
@@ -360,6 +296,76 @@ def edit_venue_submission(venue_id):
     flash('Venue ' + data['name'] + ' was successfully updated!')
     return redirect(url_for('show_venue', venue_id=venue_id))
 
+#  Artists
+#  ----------------------------------------------------------------
+@app.route('/artists')
+def artists():
+  artists = Artist.query.all()
+
+  return render_template('pages/artists.html', artists=artists)
+
+@app.route('/artists/search', methods=['POST'])
+def search_artists():
+  search_term = request.form.get('search_term', '')
+  search = "%{}%".format(search_term)
+  artists = Artist.query.filter(Artist.name.like(search)).all()
+  response={
+    "count": len(artists),
+    "data": artists
+  }
+  
+  return render_template('pages/search_artists.html', results=response, search_term=search_term)
+
+@app.route('/artists/<int:artist_id>')
+def show_artist(artist_id):
+  artist = Artist.query.get(artist_id)
+
+  return render_template('pages/show_artist.html', artist=artist.json())
+
+#  Update
+#  ----------------------------------------------------------------
+@app.route('/artists/<int:artist_id>/edit', methods=['GET'])
+def edit_artist(artist_id):
+  artist = Artist.query.get(artist_id)
+  form = ArtistForm(
+    name = artist.name,
+    city = artist.city,
+    state = artist.state,
+    genres = json.loads(artist.genres),
+    phone = artist.phone,
+    image_link = artist.image_link,
+    facebook_link = artist.facebook_link,
+    website = artist.website,
+    seeking_venue = artist.seeking_venue,
+    seeking_description = artist.seeking_description,
+  )
+
+  return render_template('forms/edit_artist.html', form=form, artist=artist)
+
+@app.route('/artists/<int:artist_id>/edit', methods=['POST'])
+def edit_artist_submission(artist_id):
+  error = None
+
+  try:
+    data = request.get_json()
+    db.session.query(Artist).filter(Artist.id == artist_id).update(data, synchronize_session=False)
+    db.session.commit()
+    
+  except:
+    db.session.rollback()
+    error = 'Invalid data'
+    print(sys.exc_info())
+
+  finally:
+    db.session.close()
+
+  if error:
+    flash('An error occurred. Artist ' + data['name'] + ' could not be updated.')
+    abort(500)
+  else:
+    flash('Artist ' + data['name'] + ' was successfully updated!')
+    return redirect(url_for('show_artist', artist_id=artist_id))
+
 #  Create Artist
 #  ----------------------------------------------------------------
 
@@ -374,6 +380,7 @@ def create_artist_submission():
 
   try:
     data = request.get_json()
+    data['seeking_venue'] = True if data['seeking_venue'] == 'True' else False
     artist = Artist(**data)
     db.session.add(artist)
     db.session.commit()
